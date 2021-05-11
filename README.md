@@ -1,1 +1,1 @@
-# ML-Kit-Textrecognition-Example-
+# ML-Kit-Textrecognition-Example
