@@ -107,6 +107,7 @@ class MainFragment : Fragment() {
                 } else {
                     data?.data
                 }
+                viewModel.recognizeText(selectedImageUri!!, context!!)
             }
         }
     }
