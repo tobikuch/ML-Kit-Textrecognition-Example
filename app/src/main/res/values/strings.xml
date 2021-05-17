@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ML-Kit-Textrecognition-Example</string>
     <string name="button_text">Analyze Image</string>
+    <string name="result">Result</string>
 </resources>

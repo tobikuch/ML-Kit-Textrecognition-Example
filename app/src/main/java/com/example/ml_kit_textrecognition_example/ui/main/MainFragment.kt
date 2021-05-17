@@ -8,12 +8,16 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.ml_kit_textrecognition_example.databinding.MainFragmentBinding
+import com.example.ml_kit_textrecognition_example.databinding.MainFragmentBindingImpl
+import kotlinx.android.synthetic.main.main_fragment.*
 import java.io.File
 
 
@@ -28,12 +32,14 @@ class MainFragment : Fragment() {
     private lateinit var viewModel: MainViewModel
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         binding = MainFragmentBinding.inflate(inflater)
 
         binding.analyzeImageButton.setOnClickListener{ clicked() }
+
+
 
         return binding.root
     }
@@ -41,7 +47,13 @@ class MainFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        // TODO: Use the ViewModel
+
+        viewModel.blocks.observe(this, Observer { newBlocks ->
+            binding.resultText.visibility = View.VISIBLE
+            val resultAdapter = ResultAdapter(newBlocks)
+            recyclerView.adapter = resultAdapter
+            resultAdapter.notifyDataSetChanged()
+        } )
     }
 
     private fun clicked(){
@@ -53,9 +65,10 @@ class MainFragment : Fragment() {
     private fun openImageIntent() {
 
         // Determine Uri of camera image to save.
-        val root =
-            File(Environment.getExternalStorageState() + File.separator.toString() + "MyDir" + File.separator)
-        root.mkdirs()
+        val root = context!!.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        //val root =
+        //    File(context!!.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator.toString() + "MyDir" + File.separator)
+        //root.mkdirs()
         val fname: String = System.currentTimeMillis().toString() + ".jpg"
         val sdImageMainDirectory = File(root, fname)
         outputFileUri = Uri.fromFile(sdImageMainDirectory)
