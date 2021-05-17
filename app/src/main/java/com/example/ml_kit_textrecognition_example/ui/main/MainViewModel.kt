@@ -13,35 +13,19 @@ class MainViewModel : ViewModel() {
     val blocks = MutableLiveData<List<String>>()
 
     fun recognizeText(path: Uri, context: Context){
-        val image: InputImage
-        Timber.i("Image Path $path")
         try {
-            image = InputImage.fromFilePath(context, path)
-
+            val image = InputImage.fromFilePath(context, path)
             val recognizer = TextRecognition.getClient()
-            val result = recognizer.process(image)
+            recognizer.process(image)
                     .addOnSuccessListener { visionText ->
-
                         val blocksCache = mutableListOf<String>()
-                        val resultText = visionText.text
                         for (block in visionText.textBlocks) {
                             val blockText = block.text
                             Timber.i("BlockText: $blockText")
-                            val blockCornerPoints = block.cornerPoints
-                            val blockFrame = block.boundingBox
                             val blockLines = StringBuilder()
                             for (line in block.lines) {
-                                val lineText = line.text
-                                blockLines.append(lineText + "\n")
-                                Timber.i("LineText: $lineText")
-                                val lineCornerPoints = line.cornerPoints
-                                val lineFrame = line.boundingBox
-                                for (element in line.elements) {
-                                    val elementText = element.text
-                                    //Timber.i("ElementText: $elementText")
-                                    val elementCornerPoints = element.cornerPoints
-                                    val elementFrame = element.boundingBox
-                                }
+                                blockLines.append(line.text + "\n")
+                                Timber.i("LineText: ${line.text}")
                             }
                             blocksCache.add(blockLines.toString())
                         }
@@ -49,8 +33,6 @@ class MainViewModel : ViewModel() {
                     }
                     .addOnFailureListener { e ->
                         Timber.e(e)
-                        // Task failed with an exception
-                        // ...
                     }
 
         } catch (e: IOException) {

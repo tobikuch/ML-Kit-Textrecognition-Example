@@ -66,9 +66,6 @@ class MainFragment : Fragment() {
 
         // Determine Uri of camera image to save.
         val root = context!!.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        //val root =
-        //    File(context!!.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator.toString() + "MyDir" + File.separator)
-        //root.mkdirs()
         val fname: String = System.currentTimeMillis().toString() + ".jpg"
         val sdImageMainDirectory = File(root, fname)
         outputFileUri = Uri.fromFile(sdImageMainDirectory)
@@ -103,8 +100,7 @@ class MainFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK) {
             if (requestCode == 200) {
-                val isCamera: Boolean
-                isCamera = if (data == null) {
+                val isCamera: Boolean = if (data == null) {
                     true
                 } else {
                     val action = data.action
@@ -114,8 +110,7 @@ class MainFragment : Fragment() {
                         action == MediaStore.ACTION_IMAGE_CAPTURE
                     }
                 }
-                val selectedImageUri: Uri?
-                selectedImageUri = if (isCamera) {
+                val selectedImageUri: Uri? = if (isCamera) {
                     outputFileUri
                 } else {
                     data?.data
